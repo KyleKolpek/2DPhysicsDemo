@@ -16,10 +16,9 @@ namespace MyGame
 		public static bool CheckCollision(
 			ICollidable staticObject,
 			ICollidable dynamicObject,
-			Vector2 projectionAxis,
 			ref Vector2 projectionVector)
 		{
-			return CheckSACollision(staticObject,dynamicObject, projectionAxis,
+			return CheckSACollision(staticObject,dynamicObject,
 				ref projectionVector);
 		}
 		public static bool CheckCollision(
@@ -27,7 +26,7 @@ namespace MyGame
 			ICollidable dynamicObject,
 			Vector2 projectionAxis)
 		{
-			return CheckSACollision(staticObject, dynamicObject, projectionAxis, ref x);
+			return CheckSACollision(staticObject, dynamicObject, ref x);
 		}
 
 		// Quick check for collission using the Separating Axis Theorem
@@ -35,7 +34,6 @@ namespace MyGame
 		private static bool CheckSACollision(
 			ICollidable staticObject,
 			ICollidable dynamicObject,
-			Vector2 projectionAxis,
 			ref Vector2 projectionVector)
 		{
 			// Get normalized separating axes
@@ -46,16 +44,8 @@ namespace MyGame
 			Vector2[] projections;
 			int projectionCount = 0;
 
-			// If we dont specify a projection axis then use whichever produces the
-			// smallest result
-			if (projectionAxis == Vector2.Zero)
-			{
-				projections = new Vector2[dAxes.Length + sAxes.Length];
-			}
-			else
-			{
-				projections = new Vector2[1];
-			}
+			// Create an array for every axis that will be tested
+			projections = new Vector2[dAxes.Length + sAxes.Length];
 
 			// Check each axis for collision
 			bool collision;
@@ -70,7 +60,7 @@ namespace MyGame
 					projectionVector = Vector2.Zero;
 					return false;
 				}
-				else if (projectionAxis == Vector2.Zero)
+				else
 				{
 					// Add the projection to the projections array
 					projections[projectionCount] = projectionVector;
@@ -88,20 +78,12 @@ namespace MyGame
 					projectionVector = Vector2.Zero;
 					return false;
 				}
-				else if (projectionAxis == Vector2.Zero)
+				else
 				{
 					// Add the projection to the projections array
 					projections[projectionCount] = projectionVector;
 					projectionCount++;
 				}
-			}
-
-			// If we have a separate axis to test
-			if (projectionAxis != Vector2.Zero)
-			{
-				// projectionCount should always be 0 here.
-				CheckAxisCollision(staticObject, dynamicObject, projectionAxis,
-					ref projections[projectionCount]);
 			}
 
 			projectionVector = Vector2Utilities.Min(projections);
@@ -150,8 +132,8 @@ namespace MyGame
 			float dMax = FloatUtilities.Max(dValues);
 
 			// Check overlaps
-			// NOTE: these return vectors may cause issues because of
-			// floating pt precision.
+			// NOTE: these vectors may cause issues because of
+			// floating point precision.
 			if (sMin <= dMax && sMax >= dMax)
 			{
 				projectionVector = testAxis * (sMax - dMin);

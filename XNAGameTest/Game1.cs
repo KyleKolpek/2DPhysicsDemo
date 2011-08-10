@@ -67,15 +67,10 @@ namespace MyGame
 			player1 = new Player(this);
 			player2 = new Player(this);
 			activePlayer = player1;
-			lines = new CollidableTriangle[8];
-			lines[0] = new CollidableTriangle(0, 400, 320, 500);
-			lines[1] = new CollidableTriangle(320, 500, 840, 500);
-			lines[2] = new CollidableTriangle(840, 500, 1280, 450);
-			lines[3] = new CollidableTriangle(1080, 270, 1110, 270);
-			lines[4] = new CollidableTriangle(1080, 320, 1110, 320);
-			lines[5] = new CollidableTriangle(1080, 370, 1110, 370);
-			lines[6] = new CollidableTriangle(1080, 420, 1110, 420);
-			lines[7] = new CollidableTriangle(1050, 210, 1150, 200);
+			lines = new CollidableTriangle[3];
+			lines[0] = new CollidableTriangle(0, 400, 320, 500, 640, 720);
+			lines[1] = new CollidableTriangle(320, 500, 840, 500, 640, 720);
+			lines[2] = new CollidableTriangle(840, 500, 1280, 450, 640, 720);
 			console = new Console(this);
 
 			// TODO: use this.Content to load your game content here
@@ -112,18 +107,16 @@ namespace MyGame
 					activePlayer = player1;
 			}
 
-			Vector2 projAxis = -player1.velocity;
-			projAxis.Normalize();
 			foreach (CollidableTriangle line in lines)
 			{
 				Vector2 tmp2 = Vector2.Zero;
 
-				bool collides = CollisionHandler.CheckCollision(line, player1, Vector2.Zero, ref tmp2);
+				bool collides = CollisionHandler.CheckCollision(line, player1, ref tmp2);
 				if ( collides )
 				{
 					if (consoleEnabled)
 					{
-						console.AppendLine("Projection vector: "+tmp2.ToString());
+						console.AppendLine("Collided with "+ line);
 					}
 					player1.devMove(tmp2.X, tmp2.Y);
 					player1.acceleration = Vector2.Zero;
@@ -131,21 +124,17 @@ namespace MyGame
 					player1.devSetOnGround(true);
 					//player1.React(line, gameTime.ElapsedGameTime.Milliseconds);
 				}
-				if (CollisionHandler.CheckCollision(line, player2, projAxis))
-				{
-					//player2.React(line, gameTime.ElapsedGameTime.Milliseconds);
-				}
 			}
-			if (CollisionHandler.CheckCollision(player1, player2, Vector2.Zero))
-			{
-				player1.SetColor(Color.Blue);
-				player2.SetColor(Color.Red);
-			}
-			else
-			{
-				player1.SetColor(Color.White);
-				player2.SetColor(Color.White);
-			}
+			//if (CollisionHandler.CheckCollision(player1, player2, Vector2.Zero))
+			//{
+			//    player1.SetColor(Color.Blue);
+			//    player2.SetColor(Color.Red);
+			//}
+			//else
+			//{
+			//    player1.SetColor(Color.White);
+			//    player2.SetColor(Color.White);
+			//}
 			activePlayer.Update(gameTime, keyboardState);
 			base.Update(gameTime);
 			if (keyboardState.IsKeyDown(Keys.C))
@@ -185,7 +174,7 @@ namespace MyGame
 			spriteBatch.End();
 
 			// Draw primitives
-			primitiveBatch.Begin(PrimitiveType.LineList);
+			primitiveBatch.Begin(PrimitiveType.TriangleList);
 			foreach (CollidableTriangle line in lines)
 				line.Draw(primitiveBatch);
 			primitiveBatch.End();

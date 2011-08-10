@@ -19,25 +19,7 @@ namespace MyGame
 		Vector2[] GetSeparatingAxes();
 		// GetPoints provides the points to project onto a given axis
 		Vector2[] GetPoints();
-		CollidableType GetCollidableType();
-		ImplementingType GetImplementingType();
 
 		//void React(ICollidable collidingObject);
-	}
-
-	enum CollidableType
-	{
-		Line,
-		CircleNoTexture,
-		CircleWithTexture,
-		BoxNoTexture,
-		BoxWithTeture,
-	}
-
-	enum ImplementingType
-	{
-		Actor,
-		CollidableLine,
-		Player,
 	}
 }

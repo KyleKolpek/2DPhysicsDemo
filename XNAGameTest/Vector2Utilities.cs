@@ -11,7 +11,7 @@ namespace MyGame
 		public static Vector2 RotatePoint(
 		Vector2 thePoint,
 		Vector2 theOrigin,
-		float theRotation)
+		float radians)
 		{
 			if (thePoint == null)
 			{
@@ -23,11 +23,11 @@ namespace MyGame
 			}
 			Vector2 aTranslatedPoint = new Vector2();
 			aTranslatedPoint.X = (float)(theOrigin.X
-				+ (thePoint.X - theOrigin.X) * Math.Cos(theRotation)
-				- (thePoint.Y - theOrigin.Y) * Math.Sin(theRotation));
+				+ (thePoint.X - theOrigin.X) * Math.Cos(radians)
+				- (thePoint.Y - theOrigin.Y) * Math.Sin(radians));
 			aTranslatedPoint.Y = (float)(theOrigin.Y
-				+ (thePoint.Y - theOrigin.Y) * Math.Cos(theRotation)
-				+ (thePoint.X - theOrigin.X) * Math.Sin(theRotation));
+				+ (thePoint.Y - theOrigin.Y) * Math.Cos(radians)
+				+ (thePoint.X - theOrigin.X) * Math.Sin(radians));
 			return aTranslatedPoint;
 		}
 
@@ -83,6 +83,18 @@ namespace MyGame
 				}
 			}
 			return max;
+		}
+
+		// TODO: Check that these are accurate
+		// They could be backwards since the Y axis is flipped
+		public static Vector2 RotateRightCW(Vector2 vector)
+		{
+			return new Vector2(vector.Y, -vector.X);
+		}
+
+		public static Vector2 RotateRightCCW(Vector2 vector)
+		{
+			return new Vector2(-vector.Y, vector.X);
 		}
 	}
 }

@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XNAGameTest", "XNAGameTest\XNAGameTest.csproj", "{703F4BA6-8258-49B8-BD43-BF48C092F505}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Content", "Content\Content.contentproj", "{97BDD6C3-3E09-4AB1-98FD-7DA57C2BD8BB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{703F4BA6-8258-49B8-BD43-BF48C092F505}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{703F4BA6-8258-49B8-BD43-BF48C092F505}.Debug|x86.ActiveCfg = Debug|x86
+		{703F4BA6-8258-49B8-BD43-BF48C092F505}.Debug|x86.Build.0 = Debug|x86
+		{703F4BA6-8258-49B8-BD43-BF48C092F505}.Release|Any CPU.ActiveCfg = Release|x86
+		{703F4BA6-8258-49B8-BD43-BF48C092F505}.Release|x86.ActiveCfg = Release|x86
+		{703F4BA6-8258-49B8-BD43-BF48C092F505}.Release|x86.Build.0 = Release|x86
+		{97BDD6C3-3E09-4AB1-98FD-7DA57C2BD8BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97BDD6C3-3E09-4AB1-98FD-7DA57C2BD8BB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{97BDD6C3-3E09-4AB1-98FD-7DA57C2BD8BB}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{97BDD6C3-3E09-4AB1-98FD-7DA57C2BD8BB}.Release|x86.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

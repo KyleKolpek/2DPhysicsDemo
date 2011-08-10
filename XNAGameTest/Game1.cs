@@ -67,19 +67,22 @@ namespace MyGame
 			player1 = new Player(this);
 			player2 = new Player(this);
 			activePlayer = player1;
-			Vector2[] points = new Vector2[3];
+			Vector2[] points = new Vector2[4];
 			lines = new CollidablePolygon[3];
 			points[0] = new Vector2(0, 400);
 			points[1] = new Vector2(320, 500);
-			points[2] = new Vector2(640, 720);
+			points[2] = new Vector2(320, 720);
+			points[3] = new Vector2(0, 720);
 			lines[0] = new CollidablePolygon(points);
 			points[0] = new Vector2(320, 500);
 			points[1] = new Vector2(840, 500);
-			points[2] = new Vector2(640, 720);
+			points[2] = new Vector2(840, 720);
+			points[3] = new Vector2(320, 720);
 			lines[1] = new CollidablePolygon(points);
 			points[0] = new Vector2(840, 500);
 			points[1] = new Vector2(1280, 450);
-			points[2] = new Vector2(640, 720);
+			points[2] = new Vector2(1280, 720);
+			points[3] = new Vector2(840, 720);
 			lines[2] = new CollidablePolygon(points);
 			console = new Console(this);
 

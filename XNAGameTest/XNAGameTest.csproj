@@ -110,6 +110,7 @@
     <Compile Include="CollidablePolygon.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="FloatUtilities.cs" />
+    <Compile Include="GroundQuad.cs" />
     <Compile Include="ICollidable.cs" />
     <Compile Include="CollisionHandler.cs" />
     <Compile Include="Level.cs" />

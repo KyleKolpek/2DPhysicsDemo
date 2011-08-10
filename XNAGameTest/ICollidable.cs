@@ -9,12 +9,6 @@ namespace MyGame
 {
 	interface ICollidable
 	{
-		// Throw exception if this fails?
-		Texture2D Texture
-		{
-			get;
-		}
-
 		// Added GetSeparatingAxes to replace the above properties
 		Vector2[] GetSeparatingAxes();
 		// GetPoints provides the points to project onto a given axis

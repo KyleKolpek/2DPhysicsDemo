@@ -17,7 +17,6 @@ namespace MyGame
 		// position represents the location of the origin
 		public Vector2 position;
 		protected float mass;
-		private Vector2 previousPosition;
 		// pixels/second/second
 		protected Vector2 gravity;
 		protected Boolean isOnGround;
@@ -43,7 +42,6 @@ namespace MyGame
 			gravity				= new Vector2(0, 800);
 			velocity			= Vector2.Zero;
 			acceleration		= Vector2.Zero;
-			previousPosition	= position;
 			isOnGround			= false;
 			rotation			= 0;
 			scale				= 1.0f;
@@ -89,11 +87,6 @@ namespace MyGame
 		#endregion
 
 		#region ICollidable Methods
-
-		public Texture2D Texture
-		{
-			get { return texture; }
-		}
 		// Watch this since the changes to where the origin is applied
 		public virtual Vector2[] GetSeparatingAxes()
 		{
@@ -237,72 +230,102 @@ namespace MyGame
 		}
 
 		#endregion
-		
-		//public void React(ICollidable collidingObject, int ms)
-		//{
-		//    switch (collidingObject.GetImplementingType())
-		//    {
-		//        case ImplementingType.CollidableLine:
-		//            CollidableTriangle line = (CollidableTriangle)collidingObject;
 
-		//            // Check to see if the player is within the X coords of the line
-		//            /*float min, max;
-		//            min = (line.FirstPoint.X > line.SecondPoint.X) ?
-		//                line.SecondPoint.X : line.FirstPoint.X;
-		//            max = (line.FirstPoint.X < line.SecondPoint.X) ?
-		//                line.SecondPoint.X : line.FirstPoint.X;
-		//            if (position.X < min || position.X > max)
-		//            {
-		//                break;
-		//            }*/
+		public void ReactToGroundQuad(GroundQuad ground, Vector2 projectionVector)
+		{
+			// First move out of the ground.
+			Move(projectionVector.X, projectionVector.Y);
 
-		//            // If the actual player hit the ground.
-		//            // Likely needs fixing. Only checks one line. If the player is above
-		//            // a different line at previousPosition then the logic is definitely
-		//            // not sound.
-		//            if (previousPosition.Y <= line.GetYatX(previousPosition.X)
-		//                && position.Y > line.GetYatX(position.X))
-		//            {
-		//                float normalForce;
-		//                Vector2 slopeDirection;
+			float normalForce;
+			Vector2 slopeDirection;
+			Vector2 normal;
 
-		//                // Get a unit vector in the direction of the slope
-		//                slopeDirection = line.Vector;
-		//                slopeDirection.Normalize();
+			// Assign normal based off projectionVector
+			normal = projectionVector;
+			normal.Normalize();
 
-		//                // Project the Player above the line
-		//                position.Y = line.GetYatX(position.X) - 0.001f;
+			// Get a unit vector in the direction of the slope
+			slopeDirection = Vector2Utilities.RotateRightCW(projectionVector);
+			slopeDirection.Normalize();
 
-		//                // Calculate modified trajectory data
-		//                normalForce = Math.Abs(Vector2.Dot(line.Normal, acceleration * mass));
-		//                velocity = Vector2.Dot(velocity, slopeDirection) * slopeDirection;
-		//                acceleration = Vector2.Dot(acceleration, slopeDirection) * slopeDirection;
+			// Calculate modified trajectory data
+			normalForce = Math.Abs(Vector2.Dot(normal, acceleration * mass));
+			velocity = Vector2.Dot(velocity, slopeDirection) * slopeDirection;
+			acceleration = Vector2.Dot(acceleration, slopeDirection) * slopeDirection;
 
-		//                // If our the static friction is greater than our force we stop the object.
-		//                // Otherwise we calculate the frictional force using the coefficient of
-		//                // kinetic friction and add that to the acceleration vector.
-		//                if ((normalForce * line.StaticFriction > acceleration.Length() * mass)
-		//                    && (velocity.Length() == 0))
-		//                {
-		//                    acceleration = Vector2.Zero;
-		//                    velocity = Vector2.Zero;
-		//                }
-		//                else
-		//                {
-		//                    Vector2 tmp = -velocity;
-		//                    tmp.Normalize();
-		//                    acceleration += normalForce * line.KineticFriction * tmp;
-		//                }
-		//                // Does not take effect because the force is cleared when Update(...) starts
-		//                isOnGround = true;
-		//            }
-		//            break;
-		//        case ImplementingType.Player:
-		//            break;
-		//        default:
-		//            break;
-		//    }
-		//}
+			// If our the static friction is greater than our force we stop the object.
+			// Otherwise we calculate the frictional force using the coefficient of
+			// kinetic friction and add that to the acceleration vector.
+			if ((normalForce * ground.StaticFriction > acceleration.Length() * mass)
+				&& (velocity.Length() == 0))
+			{
+				acceleration = Vector2.Zero;
+				velocity = Vector2.Zero;
+			}
+			else
+			{
+				Vector2 tmp = -velocity;
+				tmp.Normalize();
+				acceleration += normalForce * line.KineticFriction * tmp;
+			}
+			// Does not take effect because the force is cleared when Update(...) starts
+			isOnGround = true;
+
+		}
+		public void React(ICollidable collidingObject, int ms)
+		{
+			// Check to see if the player is within the X coords of the line
+			/*float min, max;
+			min = (line.FirstPoint.X > line.SecondPoint.X) ?
+				line.SecondPoint.X : line.FirstPoint.X;
+			max = (line.FirstPoint.X < line.SecondPoint.X) ?
+				line.SecondPoint.X : line.FirstPoint.X;
+			if (position.X < min || position.X > max)
+			{
+				break;
+			}*/
+
+			// If the actual player hit the ground.
+			// Likely needs fixing. Only checks one line. If the player is above
+			// a different line at previousPosition then the logic is definitely
+			// not sound.
+			if (previousPosition.Y <= line.GetYatX(previousPosition.X)
+				&& position.Y > line.GetYatX(position.X))
+			{
+				float normalForce;
+				Vector2 slopeDirection;
+
+				// Get a unit vector in the direction of the slope
+				slopeDirection = line.Vector;
+				slopeDirection.Normalize();
+
+				// Project the Player above the line
+				position.Y = line.GetYatX(position.X) - 0.001f;
+
+				// Calculate modified trajectory data
+				normalForce = Math.Abs(Vector2.Dot(line.Normal, acceleration * mass));
+				velocity = Vector2.Dot(velocity, slopeDirection) * slopeDirection;
+				acceleration = Vector2.Dot(acceleration, slopeDirection) * slopeDirection;
+
+				// If our the static friction is greater than our force we stop the object.
+				// Otherwise we calculate the frictional force using the coefficient of
+				// kinetic friction and add that to the acceleration vector.
+				if ((normalForce * line.StaticFriction > acceleration.Length() * mass)
+					&& (velocity.Length() == 0))
+				{
+					acceleration = Vector2.Zero;
+					velocity = Vector2.Zero;
+				}
+				else
+				{
+					Vector2 tmp = -velocity;
+					tmp.Normalize();
+					acceleration += normalForce * line.KineticFriction * tmp;
+				}
+				// Does not take effect because the force is cleared when Update(...) starts
+				isOnGround = true;
+			}
+		}
 
 	}
 }

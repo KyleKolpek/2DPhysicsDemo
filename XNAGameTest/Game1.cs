@@ -22,7 +22,7 @@ namespace MyGame
 		private PrimitiveBatch primitiveBatch;
 		private Player player1, player2;
 		private Player activePlayer;
-		private CollidableTriangle[] lines;
+		private CollidablePolygon[] lines;
 		private bool consoleEnabled;
 		private Console console;
 
@@ -67,10 +67,20 @@ namespace MyGame
 			player1 = new Player(this);
 			player2 = new Player(this);
 			activePlayer = player1;
-			lines = new CollidableTriangle[3];
-			lines[0] = new CollidableTriangle(0, 400, 320, 500, 640, 720);
-			lines[1] = new CollidableTriangle(320, 500, 840, 500, 640, 720);
-			lines[2] = new CollidableTriangle(840, 500, 1280, 450, 640, 720);
+			Vector2[] points = new Vector2[3];
+			lines = new CollidablePolygon[3];
+			points[0] = new Vector2(0, 400);
+			points[1] = new Vector2(320, 500);
+			points[2] = new Vector2(640, 720);
+			lines[0] = new CollidablePolygon(points);
+			points[0] = new Vector2(320, 500);
+			points[1] = new Vector2(840, 500);
+			points[2] = new Vector2(640, 720);
+			lines[1] = new CollidablePolygon(points);
+			points[0] = new Vector2(840, 500);
+			points[1] = new Vector2(1280, 450);
+			points[2] = new Vector2(640, 720);
+			lines[2] = new CollidablePolygon(points);
 			console = new Console(this);
 
 			// TODO: use this.Content to load your game content here
@@ -107,7 +117,7 @@ namespace MyGame
 					activePlayer = player1;
 			}
 
-			foreach (CollidableTriangle line in lines)
+			foreach (CollidablePolygon line in lines)
 			{
 				Vector2 tmp2 = Vector2.Zero;
 
@@ -174,8 +184,8 @@ namespace MyGame
 			spriteBatch.End();
 
 			// Draw primitives
-			primitiveBatch.Begin(PrimitiveType.TriangleList);
-			foreach (CollidableTriangle line in lines)
+			primitiveBatch.Begin(PrimitiveType.LineList);
+			foreach (CollidablePolygon line in lines)
 				line.Draw(primitiveBatch);
 			primitiveBatch.End();
 

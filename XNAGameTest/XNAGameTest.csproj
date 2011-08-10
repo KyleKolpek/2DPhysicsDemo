@@ -107,7 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CollidableTriangle.cs" />
+    <Compile Include="CollidablePolygon.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="FloatUtilities.cs" />
     <Compile Include="ICollidable.cs" />

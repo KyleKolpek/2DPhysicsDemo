@@ -11,7 +11,9 @@ namespace MyGame
 	class CollidablePolygon:ICollidable
 	{
 		#region Fields and Properties
+
 		private Vector2[] points;
+
 		#endregion
 
 		#region Constructors
@@ -51,14 +53,11 @@ namespace MyGame
 
 		#region ICollidable Methods
 
-		public Texture2D Texture
-		{
-			get { return null; }
-		}
 		public virtual Vector2[] GetPoints()
 		{
 			return points;
 		}
+
 		public virtual Vector2[] GetSeparatingAxes()
 		{
 			Vector2[] axes = new Vector2[points.Length];

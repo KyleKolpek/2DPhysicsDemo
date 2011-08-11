@@ -75,12 +75,8 @@ namespace MyGame
 			{
 				SetScale(scale - 0.1f);
 			}
-			if (!isOnGround)
-			{
-				ApplyForce(gravity);
-			}
+			ApplyForce(gravity);
 			isOnGround = false;
-			//ApplyFriction(elapsedMillieconds);
 		}
 
 	}

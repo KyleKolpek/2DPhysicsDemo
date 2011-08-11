@@ -22,7 +22,7 @@ namespace MyGame
 		private PrimitiveBatch primitiveBatch;
 		private Player player1, player2;
 		private Player activePlayer;
-		private CollidablePolygon[] lines;
+		private GroundQuad[] lines;
 		private bool consoleEnabled;
 		private Console console;
 
@@ -68,22 +68,27 @@ namespace MyGame
 			player2 = new Player(this);
 			activePlayer = player1;
 			Vector2[] points = new Vector2[4];
-			lines = new CollidablePolygon[3];
+			lines = new GroundQuad[4];
 			points[0] = new Vector2(0, 400);
 			points[1] = new Vector2(320, 500);
 			points[2] = new Vector2(320, 720);
 			points[3] = new Vector2(0, 720);
-			lines[0] = new CollidablePolygon(points);
+			lines[0] = new GroundQuad(points);
 			points[0] = new Vector2(320, 500);
 			points[1] = new Vector2(840, 500);
 			points[2] = new Vector2(840, 720);
 			points[3] = new Vector2(320, 720);
-			lines[1] = new CollidablePolygon(points);
+			lines[1] = new GroundQuad(points);
 			points[0] = new Vector2(840, 500);
 			points[1] = new Vector2(1280, 450);
 			points[2] = new Vector2(1280, 720);
 			points[3] = new Vector2(840, 720);
-			lines[2] = new CollidablePolygon(points);
+			lines[2] = new GroundQuad(points);
+			points[0] = new Vector2(410, 320);
+			points[1] = new Vector2(250, 500);
+			points[2] = new Vector2(290, 340);
+			points[3] = new Vector2(390, 290);
+			lines[3] = new GroundQuad(points);
 			console = new Console(this);
 
 			// TODO: use this.Content to load your game content here
@@ -105,8 +110,6 @@ namespace MyGame
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update(GameTime gameTime)
 		{
-			ICollidable[] collidingObjects = new ICollidable[20];
-
 			// Allows the game to exit
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
 				this.Exit();
@@ -120,7 +123,7 @@ namespace MyGame
 					activePlayer = player1;
 			}
 
-			foreach (CollidablePolygon line in lines)
+			foreach (GroundQuad line in lines)
 			{
 				Vector2 tmp2 = Vector2.Zero;
 
@@ -131,23 +134,14 @@ namespace MyGame
 					{
 						console.AppendLine("Collided with "+ line);
 					}
-					player1.devMove(tmp2.X, tmp2.Y);
-					player1.acceleration = Vector2.Zero;
-					player1.velocity = Vector2.Zero;
-					player1.devSetOnGround(true);
+					player1.ReactToGroundQuad(line, tmp2);
+					//player1.devMove(tmp2.X, tmp2.Y);
+					//player1.acceleration = Vector2.Zero;
+					//player1.velocity = Vector2.Zero;
+					//player1.devSetOnGround(true);
 					//player1.React(line, gameTime.ElapsedGameTime.Milliseconds);
 				}
 			}
-			//if (CollisionHandler.CheckCollision(player1, player2, Vector2.Zero))
-			//{
-			//    player1.SetColor(Color.Blue);
-			//    player2.SetColor(Color.Red);
-			//}
-			//else
-			//{
-			//    player1.SetColor(Color.White);
-			//    player2.SetColor(Color.White);
-			//}
 			activePlayer.Update(gameTime, keyboardState);
 			base.Update(gameTime);
 			if (keyboardState.IsKeyDown(Keys.C))
@@ -176,7 +170,7 @@ namespace MyGame
 			currentLevel.DrawBackground(gameTime,spriteBatch);
 			player1.Draw(gameTime, spriteBatch);
 			player2.Draw(gameTime, spriteBatch);
-			currentLevel.DrawForeground(gameTime, spriteBatch);
+			//currentLevel.DrawForeground(gameTime, spriteBatch);
 
 
 			// Draw console

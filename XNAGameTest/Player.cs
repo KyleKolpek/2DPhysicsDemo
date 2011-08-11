@@ -29,34 +29,25 @@ namespace MyGame
 				{
 					ApplyForce(new Vector2(0, -25000));
 				}
-				//Move(0, -2);
-				//rotationOrigin.Y -= 2;
 			}
 			if (keyboardState.IsKeyDown(Keys.Down))
 			{
-				ApplyForce(new Vector2(0, 100));
-				//Move(0, 2);
-				//rotationOrigin.Y += 2;
 			}
 			if (keyboardState.IsKeyDown(Keys.Left))
 			{
 				if (isOnGround)
 				{
-					ApplyForce(new Vector2(-1000, 0));
+					ApplyForce(new Vector2(-2000, 0));
+					flip = SpriteEffects.None;
 				}
-				flip = SpriteEffects.None;
-				//Move(-2, 0);
-				//rotationOrigin.X -= 2;
 			}
 			if (keyboardState.IsKeyDown(Keys.Right))
 			{
 				if (isOnGround)
 				{
-					ApplyForce(new Vector2(1000, 0));
+					ApplyForce(new Vector2(2000, 0));
+					flip = SpriteEffects.FlipHorizontally;
 				}
-				flip = SpriteEffects.FlipHorizontally;
-				//Move(2, 0);
-				//rotationOrigin.X += 2;
 			}
 
 			if (keyboardState.IsKeyDown(Keys.W))

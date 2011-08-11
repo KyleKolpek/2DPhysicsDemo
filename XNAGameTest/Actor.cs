@@ -204,6 +204,7 @@ namespace MyGame
 		{
 			// Add acceleration pixels/second/second
 			velocity += acceleration * (ms / 1000.0f);
+
 		}
 
 		public void ApplyForce(Vector2 force)
@@ -238,8 +239,13 @@ namespace MyGame
 		// TODO: Handle case where projectionVector, velocity, or acceleration are zero
 		public void ReactToGroundQuad(GroundQuad ground, Vector2 projectionVector)
 		{
+		    if (projectionVector == Vector2.Zero)
+		    {
+		        return;
+		    }
+
 			// First move out of the ground.
-			Move(projectionVector*1.01f);
+			Move(projectionVector);
 
 			// Account for "steep" slopes
 			float angle = (float)Math.Atan2(projectionVector.Y,projectionVector.X);
@@ -254,11 +260,17 @@ namespace MyGame
 
 			// Assign normal based off projectionVector
 			normal = projectionVector;
-			normal.Normalize();
+			if (normal != Vector2.Zero)
+			{
+				normal.Normalize();
+			}
 
 			// Get a unit vector in the direction of the slope
 			slopeDirection = Vector2Utilities.RotateRightCW(projectionVector);
-			slopeDirection.Normalize();
+			if (slopeDirection != Vector2.Zero)
+			{
+				slopeDirection.Normalize();
+			}
 
 			// Calculate modified trajectory data
 			normalForce = Math.Abs(Vector2.Dot(normal, acceleration * mass));
@@ -277,7 +289,10 @@ namespace MyGame
 			else
 			{
 				Vector2 tmp = -velocity;
-				tmp.Normalize();
+				if (tmp != Vector2.Zero)
+				{
+					tmp.Normalize();
+				}
 				acceleration += normalForce * ground.KineticFriction * tmp;
 			}
 			// Does not take effect because the force is cleared when Update(...) starts

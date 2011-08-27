@@ -22,17 +22,17 @@ namespace MyGame
 		// pixels/second/second
 		protected Vector2 gravity;
 		protected Boolean isOnGround;
-		protected float rotation;
+		public float rotation;
 
 		// Origin is the point that the image is manipulated relative to
 		// (rotations are centered at this point, the texture is centered at this point,
 		// etc.)
-		private Vector2 origin;
-		protected float scale;
-		private Texture2D texture;
+		protected Vector2 origin;
+		public float scale;
+		protected Texture2D texture;
 		// Rectangle is stored with respect to the texture
-		private Rectangle boundingBox;
-		private Color color;
+		protected Rectangle boundingBox;
+		protected Color color;
 		protected SpriteEffects flip;
 		#endregion
 
@@ -194,9 +194,9 @@ namespace MyGame
 			position += velocity * (ms / 1000.0f);
 
 			// Loop if falling through the ground
-			if (position.Y > 1280)
+			if (position.Y > 720)
 			{
-				position.Y = 0;
+				position = new Vector2(640,0);
 			}
 		}
 
@@ -236,14 +236,12 @@ namespace MyGame
 		}
 		#endregion
 
-		// TODO: Handle case where projectionVector, velocity, or acceleration are zero
-		public void ReactToGroundQuad(GroundQuad ground, Vector2 projectionVector)
+		public void ReactToGroundQuad(
+			GroundQuad ground,
+			Vector2 projectionVector,
+			GameTime gameTime)
 		{
-		    if (projectionVector == Vector2.Zero)
-		    {
-		        return;
-		    }
-
+			int ms = gameTime.ElapsedGameTime.Milliseconds;
 			// First move out of the ground.
 			Move(projectionVector);
 
@@ -254,28 +252,31 @@ namespace MyGame
 				isOnGround = true;
 			}
 
+			// Do checks to prevent normalizing zero vectors
+			if (projectionVector == Vector2.Zero ||
+				velocity == Vector2.Zero)
+			{
+				return;
+			}
+
 			float normalForce;
 			Vector2 slopeDirection;
 			Vector2 normal;
 
 			// Assign normal based off projectionVector
 			normal = projectionVector;
-			if (normal != Vector2.Zero)
-			{
-				normal.Normalize();
-			}
+			normal.Normalize();
 
 			// Get a unit vector in the direction of the slope
 			slopeDirection = Vector2Utilities.RotateRightCW(projectionVector);
-			if (slopeDirection != Vector2.Zero)
-			{
-				slopeDirection.Normalize();
-			}
+			slopeDirection.Normalize();
 
 			// Calculate modified trajectory data
 			normalForce = Math.Abs(Vector2.Dot(normal, acceleration * mass));
 			velocity = Vector2.Dot(velocity, slopeDirection) * slopeDirection;
-			acceleration = Vector2.Dot(acceleration, slopeDirection) * slopeDirection;
+			
+			// Don't think this should be here
+			//acceleration = Vector2.Dot(acceleration, slopeDirection) * slopeDirection;  
 
 			// If our the static friction is greater than our force we stop the object.
 			// Otherwise we calculate the frictional force using the coefficient of
@@ -283,7 +284,7 @@ namespace MyGame
 			if ((normalForce * ground.StaticFriction > acceleration.Length() * mass)
 				&& (velocity.Length() == 0))
 			{
-				acceleration = Vector2.Zero;
+				//acceleration = Vector2.Zero;
 				velocity = Vector2.Zero;
 			}
 			else
@@ -293,66 +294,28 @@ namespace MyGame
 				{
 					tmp.Normalize();
 				}
-				acceleration += normalForce * ground.KineticFriction * tmp;
+
+				// I think we should modify the velocity directly here,
+				// rather than the acceleration.
+				// Try modifying velocity and setting acceleration to 0.
+				// Woo, it worked! There could still be an issue since we
+				// are updating velocity based
+				// off time twice in the same update loop now.
+				acceleration = Vector2.Zero;
+				Vector2 velocityDiff = normalForce * ground.KineticFriction *
+					tmp * (ms / 1000.0f);
+				if (Math.Abs(velocity.Length()) - Math.Abs(velocityDiff.Length()) > 0)
+				{
+					velocity = velocity + velocityDiff;
+				}
+				else
+				{
+					velocity = Vector2.Zero;
+				}
 			}
 			// Does not take effect because the force is cleared when Update(...) starts
 			//isOnGround = true;
 
 		}
-		//public void React(ICollidable collidingObject, int ms)
-		//{
-		//    // Check to see if the player is within the X coords of the line
-		//    /*float min, max;
-		//    min = (line.FirstPoint.X > line.SecondPoint.X) ?
-		//        line.SecondPoint.X : line.FirstPoint.X;
-		//    max = (line.FirstPoint.X < line.SecondPoint.X) ?
-		//        line.SecondPoint.X : line.FirstPoint.X;
-		//    if (position.X < min || position.X > max)
-		//    {
-		//        break;
-		//    }*/
-
-		//    // If the actual player hit the ground.
-		//    // Likely needs fixing. Only checks one line. If the player is above
-		//    // a different line at previousPosition then the logic is definitely
-		//    // not sound.
-		//    if (previousPosition.Y <= line.GetYatX(previousPosition.X)
-		//        && position.Y > line.GetYatX(position.X))
-		//    {
-		//        float normalForce;
-		//        Vector2 slopeDirection;
-
-		//        // Get a unit vector in the direction of the slope
-		//        slopeDirection = line.Vector;
-		//        slopeDirection.Normalize();
-
-		//        // Project the Player above the line
-		//        position.Y = line.GetYatX(position.X) - 0.001f;
-
-		//        // Calculate modified trajectory data
-		//        normalForce = Math.Abs(Vector2.Dot(line.Normal, acceleration * mass));
-		//        velocity = Vector2.Dot(velocity, slopeDirection) * slopeDirection;
-		//        acceleration = Vector2.Dot(acceleration, slopeDirection) * slopeDirection;
-
-		//        // If our the static friction is greater than our force we stop the object.
-		//        // Otherwise we calculate the frictional force using the coefficient of
-		//        // kinetic friction and add that to the acceleration vector.
-		//        if ((normalForce * line.StaticFriction > acceleration.Length() * mass)
-		//            && (velocity.Length() == 0))
-		//        {
-		//            acceleration = Vector2.Zero;
-		//            velocity = Vector2.Zero;
-		//        }
-		//        else
-		//        {
-		//            Vector2 tmp = -velocity;
-		//            tmp.Normalize();
-		//            acceleration += normalForce * line.KineticFriction * tmp;
-		//        }
-		//        // Does not take effect because the force is cleared when Update(...) starts
-		//        isOnGround = true;
-		//    }
-		//}
-
 	}
 }

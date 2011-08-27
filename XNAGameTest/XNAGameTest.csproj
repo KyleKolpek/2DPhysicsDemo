@@ -107,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera.cs" />
     <Compile Include="CollidablePolygon.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="FloatUtilities.cs" />

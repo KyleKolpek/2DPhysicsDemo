@@ -134,12 +134,7 @@ namespace MyGame
 					{
 						console.AppendLine("Collided with "+ line);
 					}
-					player1.ReactToGroundQuad(line, tmp2);
-					//player1.devMove(tmp2.X, tmp2.Y);
-					//player1.acceleration = Vector2.Zero;
-					//player1.velocity = Vector2.Zero;
-					//player1.devSetOnGround(true);
-					//player1.React(line, gameTime.ElapsedGameTime.Milliseconds);
+					player1.ReactToGroundQuad(line, tmp2, gameTime);
 				}
 			}
 			activePlayer.Update(gameTime, keyboardState);
@@ -161,31 +156,44 @@ namespace MyGame
 		protected override void Draw(GameTime gameTime)
 		{
 			GraphicsDevice.Clear(Color.CornflowerBlue);
+			Camera camera = new Camera();
+			camera.Position = activePlayer.position;
+			camera.Rotation = -activePlayer.rotation;
+			camera.Zoom = 1/activePlayer.scale;
+			camera.Focus = new Vector2(GraphicsDevice.Viewport.Width * .5f,
+				GraphicsDevice.Viewport.Height * .5f);
+			camera.UpdateTransformation();
 
 			// TODO: Add your drawing code here
 			// Start sprite batch
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+			spriteBatch.Begin(SpriteSortMode.Immediate,
+				BlendState.AlphaBlend,
+				null,
+				null,
+				null,
+				null,
+				camera.GetTransformation());
 
 			// Draw Sprites
 			currentLevel.DrawBackground(gameTime,spriteBatch);
 			player1.Draw(gameTime, spriteBatch);
 			player2.Draw(gameTime, spriteBatch);
-			//currentLevel.DrawForeground(gameTime, spriteBatch);
+			currentLevel.DrawForeground(gameTime, spriteBatch);
 
 
 			// Draw console
 			console.Draw(spriteBatch);
-			base.Draw(gameTime);
 
 			// End sprite batch
 			spriteBatch.End();
 
 			// Draw primitives
-			primitiveBatch.Begin(PrimitiveType.LineList);
+			primitiveBatch.Begin(PrimitiveType.LineList, camera.GetTransformation());
 			foreach (CollidablePolygon line in lines)
 				line.Draw(primitiveBatch);
 			primitiveBatch.End();
 
+			base.Draw(gameTime);
 		}
 
 

@@ -79,12 +79,11 @@ namespace MyGame
 			// set up a new basic effect, and enable vertex colors.
 			basicEffect = new BasicEffect(graphicsDevice);
 			basicEffect.VertexColorEnabled = true;
-
 			// projection uses CreateOrthographicOffCenter to create 2d projection
 			// matrix with 0,0 in the upper left.
 			basicEffect.Projection = Matrix.CreateOrthographicOffCenter
-				(0, graphicsDevice.Viewport.Width,
-				graphicsDevice.Viewport.Height, 0,
+				(0, device.Viewport.Width,
+				device.Viewport.Height, 0,
 				0, 1);
 		}
 
@@ -109,6 +108,13 @@ namespace MyGame
 		// drawn, and to prepare the graphics card to render those primitives.
 		public void Begin(PrimitiveType primitiveType)
 		{
+			Begin(primitiveType, Matrix.Identity);
+		}
+
+		public void Begin(PrimitiveType primitiveType, Matrix transformation)
+		{
+			basicEffect.World = transformation;
+
 			if (hasBegun)
 			{
 				throw new InvalidOperationException

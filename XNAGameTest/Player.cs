@@ -10,9 +10,11 @@ namespace MyGame
 {
 	class Player:Actor
 	{
+		bool justJumped;
 		// Constructor
 		public Player(Game1 game):base(game)
 		{
+			justJumped = false;
 		}
 
 		new public void Update(
@@ -27,7 +29,15 @@ namespace MyGame
 			{
 				if (isOnGround)
 				{
-					ApplyForce(new Vector2(0, -25000));
+					if (!justJumped)
+					{
+						ApplyForce(new Vector2(0, -25000));
+						justJumped = true;
+					}
+					else
+					{
+						justJumped = false;
+					}
 				}
 			}
 			if (keyboardState.IsKeyDown(Keys.Down))

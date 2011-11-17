@@ -60,9 +60,9 @@ namespace MyGame
 
 		// hasBegun is flipped to true once Begin is called, and is used to make
 		// sure users don't call End before Begin is called.
-		bool hasBegun = false;
+		Boolean hasBegun = false;
 
-		bool isDisposed = false;
+		Boolean isDisposed = false;
 
 		#endregion
 
@@ -93,7 +93,7 @@ namespace MyGame
 			GC.SuppressFinalize(this);
 		}
 
-		protected virtual void Dispose(bool disposing)
+		protected virtual void Dispose(Boolean disposing)
 		{
 			if (disposing && !isDisposed)
 			{
@@ -138,7 +138,7 @@ namespace MyGame
 
 			//tell our basic effect to begin.
 			basicEffect.CurrentTechnique.Passes[0].Apply();
-			// flip the error checking boolean. It's now ok to call AddVertex, Flush,
+			// flip the error checking Boolean. It's now ok to call AddVertex, Flush,
 			// and End.
 			hasBegun = true;
 		}
@@ -162,7 +162,7 @@ namespace MyGame
 				case PrimitiveType.TriangleList:
 					// are we starting a new primitive? if so, and there will not be enough room
 					// for a whole primitive, flush.
-					bool newPrimitive = ((positionInBuffer % numVertsPerPrimitive) == 0);
+					Boolean newPrimitive = ((positionInBuffer % numVertsPerPrimitive) == 0);
 
 					if (newPrimitive &&
 						(positionInBuffer + numVertsPerPrimitive) >= vertices.Length)

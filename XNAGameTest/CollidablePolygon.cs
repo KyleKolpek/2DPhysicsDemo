@@ -23,7 +23,8 @@ namespace MyGame
 		{
 			if (points.Length < 3)
 			{
-				throw new ArgumentException("Vector2 points[] must contain at least 3 Vector2s");
+				throw new ArgumentException(
+					"Vector2 points[] must contain at least 3 Vector2s");
 			}
 			this.points = new Vector2[points.Length];
 			for(int i=0; i<points.Length; i++)

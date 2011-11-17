@@ -10,11 +10,10 @@ namespace MyGame
 {
 	class Player:Actor
 	{
-		bool justJumped;
+        const int jumpVelocity = -350;
 		// Constructor
 		public Player(Game1 game):base(game)
 		{
-			justJumped = false;
 		}
 
 		new public void Update(
@@ -29,15 +28,7 @@ namespace MyGame
 			{
 				if (isOnGround)
 				{
-					if (!justJumped)
-					{
-						ApplyForce(new Vector2(0, -25000));
-						justJumped = true;
-					}
-					else
-					{
-						justJumped = false;
-					}
+					velocity = new Vector2(velocity.X, jumpVelocity);
 				}
 			}
 			if (keyboardState.IsKeyDown(Keys.Down))
@@ -48,16 +39,16 @@ namespace MyGame
 				if (isOnGround)
 				{
 					ApplyForce(new Vector2(-2000, 0));
-					flip = SpriteEffects.None;
-				}
+                }
+                flip = SpriteEffects.None;
 			}
 			if (keyboardState.IsKeyDown(Keys.Right))
 			{
 				if (isOnGround)
 				{
 					ApplyForce(new Vector2(2000, 0));
-					flip = SpriteEffects.FlipHorizontally;
-				}
+                }
+                flip = SpriteEffects.FlipHorizontally;
 			}
 
 			if (keyboardState.IsKeyDown(Keys.W))

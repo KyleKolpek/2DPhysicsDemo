@@ -23,7 +23,7 @@ namespace MyGame
 		private Player player1, player2;
 		private Player activePlayer;
 		private GroundQuad[] lines;
-		private bool consoleEnabled;
+		private Boolean consoleEnabled;
 		private Console console;
 
 		//Game Data
@@ -31,6 +31,7 @@ namespace MyGame
 
 		//Input States
 		private KeyboardState keyboardState;
+		private KeyboardState prevKeyboardState;
 		private GamePadState gamePadState;
 
 		public Game1()
@@ -70,8 +71,8 @@ namespace MyGame
 			Vector2[] points = new Vector2[4];
 			lines = new GroundQuad[4];
 			points[0] = new Vector2(0, 400);
-			points[1] = new Vector2(320, 500);
-			points[2] = new Vector2(320, 720);
+			points[1] = new Vector2(350, 500);
+			points[2] = new Vector2(350, 720);
 			points[3] = new Vector2(0, 720);
 			lines[0] = new GroundQuad(points);
 			points[0] = new Vector2(320, 500);
@@ -85,8 +86,8 @@ namespace MyGame
 			points[3] = new Vector2(840, 720);
 			lines[2] = new GroundQuad(points);
 			points[0] = new Vector2(410, 320);
-			points[1] = new Vector2(250, 500);
-			points[2] = new Vector2(290, 340);
+			points[1] = new Vector2(250, 360);
+			points[2] = new Vector2(290, 310);
 			points[3] = new Vector2(390, 290);
 			lines[3] = new GroundQuad(points);
 			console = new Console(this);
@@ -114,7 +115,9 @@ namespace MyGame
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
 				this.Exit();
 
+			prevKeyboardState = keyboardState;
 			keyboardState = Keyboard.GetState();
+
 			if (keyboardState.IsKeyDown(Keys.Tab))
 			{
 				if (activePlayer == player1)
@@ -127,7 +130,7 @@ namespace MyGame
 			{
 				Vector2 tmp2 = Vector2.Zero;
 
-				bool collides = CollisionHandler.CheckCollision(line, player1, ref tmp2);
+				Boolean collides = CollisionHandler.CheckCollision(line, player1, ref tmp2);
 				if ( collides )
 				{
 					if (consoleEnabled)
@@ -174,17 +177,15 @@ namespace MyGame
 				null,
 				camera.GetTransformation());
 
-			// Draw Sprites
+			// Draw objects affected by camera
 			currentLevel.DrawBackground(gameTime,spriteBatch);
 			player1.Draw(gameTime, spriteBatch);
 			player2.Draw(gameTime, spriteBatch);
 			currentLevel.DrawForeground(gameTime, spriteBatch);
 
 
-			// Draw console
-			console.Draw(spriteBatch);
 
-			// End sprite batch
+			// End draw
 			spriteBatch.End();
 
 			// Draw primitives
@@ -192,6 +193,16 @@ namespace MyGame
 			foreach (CollidablePolygon line in lines)
 				line.Draw(primitiveBatch);
 			primitiveBatch.End();
+
+            // Draw static objects
+            spriteBatch.Begin(SpriteSortMode.Immediate,
+                BlendState.AlphaBlend);
+
+            // Draw console
+            console.Draw(spriteBatch);
+
+            // End drawing static objects
+            spriteBatch.End();
 
 			base.Draw(gameTime);
 		}

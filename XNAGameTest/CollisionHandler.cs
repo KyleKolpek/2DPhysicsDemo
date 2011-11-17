@@ -13,7 +13,7 @@ namespace MyGame
 		// CheckSACollision
 		private static Vector2 x; 
 
-		public static bool CheckCollision(
+		public static Boolean CheckCollision(
 			ICollidable staticObject,
 			ICollidable dynamicObject,
 			ref Vector2 projectionVector)
@@ -21,17 +21,16 @@ namespace MyGame
 			return CheckSACollision(staticObject,dynamicObject,
 				ref projectionVector);
 		}
-		public static bool CheckCollision(
+		public static Boolean CheckCollision(
 			ICollidable staticObject,
-			ICollidable dynamicObject,
-			Vector2 projectionAxis)
+			ICollidable dynamicObject)
 		{
 			return CheckSACollision(staticObject, dynamicObject, ref x);
 		}
 
 		// Quick check for collission using the Separating Axis Theorem
 
-		private static bool CheckSACollision(
+		private static Boolean CheckSACollision(
 			ICollidable staticObject,
 			ICollidable dynamicObject,
 			ref Vector2 projectionVector)
@@ -48,7 +47,7 @@ namespace MyGame
 			projections = new Vector2[dAxes.Length + sAxes.Length];
 
 			// Check each axis for collision
-			bool collision;
+			Boolean collision;
 			foreach (Vector2 axis in sAxes)
 			{
 				collision = CheckAxisCollision(staticObject, dynamicObject,
@@ -91,19 +90,23 @@ namespace MyGame
 		}
 
 		//Accurate per-pixel collision check
-		private bool CheckPixelCollision(
+		private Boolean CheckPixelCollision(
 			ICollidable object1,
 			ICollidable object2)
 		{
-			bool collided = false;
-			//for (int y = 0; y < boundingTexture.Height; y++)
-			//	for (int x = 0; x < boundingTexture.Width; x++ )
+			Boolean collided = false;
+			//	for (int y = 0; y < boundingTexture.Height; y++)
+			//		for (int x = 0; x < boundingTexture.Width; x++ )
+			//			if(object1.Texture.GetAlpha()>0 && object2.Texture.GetAlpha()>0)
+			//			{
+			//				collided = true;
+			//			}
 			return collided;
 		}
 
 		// Check a particular axis for collision
 		// Returns true if there is a collision
-		private static bool CheckAxisCollision(
+		private static Boolean CheckAxisCollision(
 			ICollidable staticObject,
 			ICollidable dynamicObject,
 			Vector2 testAxis,

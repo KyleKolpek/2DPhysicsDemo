@@ -11,7 +11,6 @@ namespace MyGame
 	class Actor : ICollidable
 	{
 		#region Fields and Properties
-		// TODO: REVERT THESE TO PROTECTED
 		protected Vector2 acceleration;
 		protected Vector2 velocity;
 
@@ -299,8 +298,8 @@ namespace MyGame
 				// rather than the acceleration.
 				// Try modifying velocity and setting acceleration to 0.
 				// Woo, it worked! There could still be an issue since we
-				// are updating velocity based
-				// off time twice in the same update loop now.
+				// are updating velocity by time twice in the same update
+				// loop now.
 				acceleration = Vector2.Zero;
 				Vector2 velocityDiff = normalForce * ground.KineticFriction *
 					tmp * (ms / 1000.0f);

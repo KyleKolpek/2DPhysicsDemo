@@ -1,6 +1,6 @@
 using System;
 
-namespace MyGame
+namespace ProjectNeoclaRPG
 {
 #if WINDOWS || XBOX
     static class Program

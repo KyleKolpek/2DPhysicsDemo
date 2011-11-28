@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XNAGameTest", "XNAGameTest\XNAGameTest.csproj", "{703F4BA6-8258-49B8-BD43-BF48C092F505}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectNeoclaRPG", "ProjectNeoclaRPG\ProjectNeoclaRPG.csproj", "{703F4BA6-8258-49B8-BD43-BF48C092F505}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Content", "Content\Content.contentproj", "{97BDD6C3-3E09-4AB1-98FD-7DA57C2BD8BB}"
 EndProject

@@ -8,68 +8,82 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ProjectNeoclaRPG
 {
-	class Player:Actor
-	{
+    class Player:Actor
+    {
         const int jumpVelocity = -350;
-		// Constructor
-		public Player(Game1 game):base(game)
-		{
-		}
+        // Constructor
+        public Player(Game1 game):base(game)
+        {
+        }
 
-		new public void Update(
-			GameTime gameTime,
-			KeyboardState keyboardState)
-		{
-			base.Update(gameTime, keyboardState);
+        new public void Update(
+            GameTime gameTime,
+            KeyboardState keyboardState)
+        {
+            base.Update(gameTime, keyboardState);
 
-			// Calculate user forces first so that the reaction can modify them
-			// if desired.
-			if (keyboardState.IsKeyDown(Keys.Up))
-			{
-				if (isOnGround)
-				{
-					velocity = new Vector2(velocity.X, jumpVelocity);
-				}
-			}
-			if (keyboardState.IsKeyDown(Keys.Down))
-			{
-			}
-			if (keyboardState.IsKeyDown(Keys.Left))
-			{
-				if (isOnGround)
-				{
-					ApplyForce(new Vector2(-2000, 0));
+            // Apply drag
+            ApplyForce( 0.5f * velocity * velocity);
+
+            // Calculate user forces first so that the reaction can modify them
+            // if desired.
+            if (keyboardState.IsKeyDown(Keys.W))
+            {
+                if (isOnGround)
+                {
+                    isSettled = false;
+                    velocity = new Vector2(velocity.X, jumpVelocity);
+                }
+            }
+            if (keyboardState.IsKeyDown(Keys.S))
+            {
+            }
+            if (keyboardState.IsKeyDown(Keys.A))
+            {
+                if (isOnGround)
+                {
+                    isSettled = false;
+                    ApplyForce(new Vector2(-2000, 0));
                 }
                 flip = SpriteEffects.None;
-			}
-			if (keyboardState.IsKeyDown(Keys.Right))
-			{
-				if (isOnGround)
-				{
-					ApplyForce(new Vector2(2000, 0));
+            }
+            if (keyboardState.IsKeyDown(Keys.D))
+            {
+                if (isOnGround)
+                {
+                    isSettled = false;
+                    ApplyForce(new Vector2(2000, 0));
                 }
                 flip = SpriteEffects.FlipHorizontally;
-			}
+            }
 
-			if (keyboardState.IsKeyDown(Keys.W))
-			{
-				Rotate(-0.1f);
-			}
-			if (keyboardState.IsKeyDown(Keys.Q))
-			{
-				Rotate(0.1f);
-			}
-			if (keyboardState.IsKeyDown(Keys.A))
-			{
-				SetScale(scale + 0.1f);
-			}
-			if (keyboardState.IsKeyDown(Keys.S))
-			{
-				SetScale(scale - 0.1f);
-			}
-			ApplyForce(gravity);
-			isOnGround = false;
-		}
+            if (keyboardState.IsKeyDown(Keys.Right))
+            {
+                isSettled = false;
+                Rotate(-0.1f);
+            }
+            if (keyboardState.IsKeyDown(Keys.Left))
+            {
+                isSettled = false;
+                Rotate(0.1f);
+            }
+            if (keyboardState.IsKeyDown(Keys.Up))
+            {
+                isSettled = false;
+                SetScale(scale + 0.05f);
+            }
+            if (keyboardState.IsKeyDown(Keys.Down))
+            {
+                isSettled = false;
+                SetScale(scale - 0.05f);
+            }
+            // If we aren't settled we want to let gravity happen
+            if (!isSettled)
+            {
+                ApplyForce(gravity);
+                isOnGround = false;
+            }
+        }
 
-	}
+    }
 }

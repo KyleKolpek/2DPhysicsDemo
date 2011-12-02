@@ -20,285 +20,285 @@ using Microsoft.Xna.Framework.Input;
 namespace ProjectNeoclaRPG
 {
 
-	// PrimitiveBatch is a class that handles efficient rendering automatically for its
-	// users, in a similar way to SpriteBatch. PrimitiveBatch can render lines, points,
-	// and triangles to the screen. In this sample, it is used to draw a spacewars
-	// retro scene.
-	public class PrimitiveBatch : IDisposable
-	{
-		#region Constants and Fields
+    // PrimitiveBatch is a class that handles efficient rendering automatically for its
+    // users, in a similar way to SpriteBatch. PrimitiveBatch can render lines, points,
+    // and triangles to the screen. In this sample, it is used to draw a spacewars
+    // retro scene.
+    public class PrimitiveBatch : IDisposable
+    {
+        #region Constants and Fields
 
-		// this constant controls how large the vertices buffer is. Larger buffers will
-		// require flushing less often, which can increase performance. However, having
-		// buffer that is unnecessarily large will waste memory.
-		const int DefaultBufferSize = 500;
+        // this constant controls how large the vertices buffer is. Larger buffers will
+        // require flushing less often, which can increase performance. However, having
+        // buffer that is unnecessarily large will waste memory.
+        const int DefaultBufferSize = 500;
 
-		// a block of vertices that calling AddVertex will fill. Flush will draw using
-		// this array, and will determine how many primitives to draw from
-		// positionInBuffer.
-		VertexPositionColor[] vertices = new VertexPositionColor[DefaultBufferSize];
+        // a block of vertices that calling AddVertex will fill. Flush will draw using
+        // this array, and will determine how many primitives to draw from
+        // positionInBuffer.
+        VertexPositionColor[] vertices = new VertexPositionColor[DefaultBufferSize];
 
-		// keeps track of how many vertices have been added. this value increases until
-		// we run out of space in the buffer, at which time Flush is automatically
-		// called.
-		int positionInBuffer = 0;
+        // keeps track of how many vertices have been added. this value increases until
+        // we run out of space in the buffer, at which time Flush is automatically
+        // called.
+        int positionInBuffer = 0;
 
-		// a basic effect, which contains the shaders that we will use to draw our
-		// primitives.
-		BasicEffect basicEffect;
+        // a basic effect, which contains the shaders that we will use to draw our
+        // primitives.
+        BasicEffect basicEffect;
 
-		// the device that we will issue draw calls to.
-		GraphicsDevice device;
+        // the device that we will issue draw calls to.
+        GraphicsDevice device;
 
-		// this value is set by Begin, and is the type of primitives that we are
-		// drawing.
-		PrimitiveType primitiveType;
+        // this value is set by Begin, and is the type of primitives that we are
+        // drawing.
+        PrimitiveType primitiveType;
 
-		// how many verts does each of these primitives take up? points are 1,
-		// lines are 2, and triangles are 3.
-		int numVertsPerPrimitive;
+        // how many verts does each of these primitives take up? points are 1,
+        // lines are 2, and triangles are 3.
+        int numVertsPerPrimitive;
 
-		// hasBegun is flipped to true once Begin is called, and is used to make
-		// sure users don't call End before Begin is called.
-		Boolean hasBegun = false;
+        // hasBegun is flipped to true once Begin is called, and is used to make
+        // sure users don't call End before Begin is called.
+        Boolean hasBegun = false;
 
-		Boolean isDisposed = false;
+        Boolean isDisposed = false;
 
-		#endregion
+        #endregion
 
-		// the constructor creates a new PrimitiveBatch and sets up all of the internals
-		// that PrimitiveBatch will need.
-		public PrimitiveBatch(GraphicsDevice graphicsDevice)
-		{
-			if (graphicsDevice == null)
-			{
-				throw new ArgumentNullException("graphicsDevice");
-			}
-			device = graphicsDevice;
+        // the constructor creates a new PrimitiveBatch and sets up all of the internals
+        // that PrimitiveBatch will need.
+        public PrimitiveBatch(GraphicsDevice graphicsDevice)
+        {
+            if (graphicsDevice == null)
+            {
+                throw new ArgumentNullException("graphicsDevice");
+            }
+            device = graphicsDevice;
 
-			// set up a new basic effect, and enable vertex colors.
-			basicEffect = new BasicEffect(graphicsDevice);
-			basicEffect.VertexColorEnabled = true;
-			// projection uses CreateOrthographicOffCenter to create 2d projection
-			// matrix with 0,0 in the upper left.
-			basicEffect.Projection = Matrix.CreateOrthographicOffCenter
-				(0, device.Viewport.Width,
-				device.Viewport.Height, 0,
-				0, 1);
-		}
+            // set up a new basic effect, and enable vertex colors.
+            basicEffect = new BasicEffect(graphicsDevice);
+            basicEffect.VertexColorEnabled = true;
+            // projection uses CreateOrthographicOffCenter to create 2d projection
+            // matrix with 0,0 in the upper left.
+            basicEffect.Projection = Matrix.CreateOrthographicOffCenter
+                (0, device.Viewport.Width,
+                device.Viewport.Height, 0,
+                0, 1);
+        }
 
-		public void Dispose()
-		{
-			this.Dispose(true);
-			GC.SuppressFinalize(this);
-		}
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-		protected virtual void Dispose(Boolean disposing)
-		{
-			if (disposing && !isDisposed)
-			{
-				if (basicEffect != null)
-					basicEffect.Dispose();
+        protected virtual void Dispose(Boolean disposing)
+        {
+            if (disposing && !isDisposed)
+            {
+                if (basicEffect != null)
+                    basicEffect.Dispose();
 
-				isDisposed = true;
-			}
-		}
+                isDisposed = true;
+            }
+        }
 
-		// Begin is called to tell the PrimitiveBatch what kind of primitives will be
-		// drawn, and to prepare the graphics card to render those primitives.
-		public void Begin(PrimitiveType primitiveType)
-		{
-			Begin(primitiveType, Matrix.Identity);
-		}
+        // Begin is called to tell the PrimitiveBatch what kind of primitives will be
+        // drawn, and to prepare the graphics card to render those primitives.
+        public void Begin(PrimitiveType primitiveType)
+        {
+            Begin(primitiveType, Matrix.Identity);
+        }
 
-		public void Begin(PrimitiveType primitiveType, Matrix transformation)
-		{
-			basicEffect.World = transformation;
+        public void Begin(PrimitiveType primitiveType, Matrix transformation)
+        {
+            basicEffect.World = transformation;
 
-			if (hasBegun)
-			{
-				throw new InvalidOperationException
-					("End must be called before Begin can be called again.");
-			}
+            if (hasBegun)
+            {
+                throw new InvalidOperationException
+                    ("End must be called before Begin can be called again.");
+            }
 
-			// these three types reuse vertices, so we can't flush properly without more
-			// complex logic. Since that's a bit too complicated for this sample, we'll
-			// simply disallow them.
-			if (primitiveType == PrimitiveType.LineStrip ||
-				primitiveType == PrimitiveType.TriangleStrip)
-			{
-				//throw new NotSupportedException
-				//  ("The specified primitiveType is not supported by PrimitiveBatch.");
-			}
+            // these three types reuse vertices, so we can't flush properly without more
+            // complex logic. Since that's a bit too complicated for this sample, we'll
+            // simply disallow them.
+            if (primitiveType == PrimitiveType.LineStrip ||
+                primitiveType == PrimitiveType.TriangleStrip)
+            {
+                //throw new NotSupportedException
+                //  ("The specified primitiveType is not supported by PrimitiveBatch.");
+            }
 
-			this.primitiveType = primitiveType;
+            this.primitiveType = primitiveType;
 
-			// how many verts will each of these primitives require?
-			this.numVertsPerPrimitive = NumVertsPerPrimitive(primitiveType);
+            // how many verts will each of these primitives require?
+            this.numVertsPerPrimitive = NumVertsPerPrimitive(primitiveType);
 
-			//tell our basic effect to begin.
-			basicEffect.CurrentTechnique.Passes[0].Apply();
-			// flip the error checking Boolean. It's now ok to call AddVertex, Flush,
-			// and End.
-			hasBegun = true;
-		}
+            //tell our basic effect to begin.
+            basicEffect.CurrentTechnique.Passes[0].Apply();
+            // flip the error checking Boolean. It's now ok to call AddVertex, Flush,
+            // and End.
+            hasBegun = true;
+        }
 
-		// AddVertex is called to add another vertex to be rendered. To draw a point,
-		// AddVertex must be called once. for lines, twice, and for triangles 3 times.
-		// this function can only be called once begin has been called.
-		// if there is not enough room in the vertices buffer, Flush is called
-		// automatically.
-		public void AddVertex(Vector2 vertex, Color color)
-		{
-			if (!hasBegun)
-			{
-				throw new InvalidOperationException
-					("Begin must be called before AddVertex can be called.");
-			}
+        // AddVertex is called to add another vertex to be rendered. To draw a point,
+        // AddVertex must be called once. for lines, twice, and for triangles 3 times.
+        // this function can only be called once begin has been called.
+        // if there is not enough room in the vertices buffer, Flush is called
+        // automatically.
+        public void AddVertex(Vector2 vertex, Color color)
+        {
+            if (!hasBegun)
+            {
+                throw new InvalidOperationException
+                    ("Begin must be called before AddVertex can be called.");
+            }
 
-			switch (primitiveType)
-			{
-				case PrimitiveType.LineList:
-				case PrimitiveType.TriangleList:
-					// are we starting a new primitive? if so, and there will not be enough room
-					// for a whole primitive, flush.
-					Boolean newPrimitive = ((positionInBuffer % numVertsPerPrimitive) == 0);
+            switch (primitiveType)
+            {
+                case PrimitiveType.LineList:
+                case PrimitiveType.TriangleList:
+                    // are we starting a new primitive? if so, and there will not be enough room
+                    // for a whole primitive, flush.
+                    Boolean newPrimitive = ((positionInBuffer % numVertsPerPrimitive) == 0);
 
-					if (newPrimitive &&
-						(positionInBuffer + numVertsPerPrimitive) >= vertices.Length)
-					{
-						Flush();
-					}
-					break;
-				case PrimitiveType.LineStrip:
-				case PrimitiveType.TriangleStrip:
-					int oldPosition = positionInBuffer;
-					// if there is not enough room for a whole primitive, flush.
-					if (positionInBuffer >= vertices.Length)
-					{
-						Flush();
-						// continue the strips
-						switch (primitiveType)
-						{
-							case PrimitiveType.LineStrip:
-								if (oldPosition > 0)
-								{
-									vertices[positionInBuffer] = vertices[oldPosition - 1];
-									positionInBuffer++;
-								}
-								break;
-							case PrimitiveType.TriangleStrip:
-								if (oldPosition > 1)
-								{
-									vertices[positionInBuffer] = vertices[oldPosition - 2];
-									positionInBuffer++;
-									vertices[positionInBuffer] = vertices[oldPosition - 1];
-									positionInBuffer++;
-								}
-								break;
-						}
-					}
-					break;
-				default:
-					throw new InvalidOperationException("primitive is not valid");
-			}
-			// once we know there's enough room, set the vertex in the buffer,
-			// and increase position.
-			vertices[positionInBuffer].Position = new Vector3(vertex, 0);
-			vertices[positionInBuffer].Color = color;
+                    if (newPrimitive &&
+                        (positionInBuffer + numVertsPerPrimitive) >= vertices.Length)
+                    {
+                        Flush();
+                    }
+                    break;
+                case PrimitiveType.LineStrip:
+                case PrimitiveType.TriangleStrip:
+                    int oldPosition = positionInBuffer;
+                    // if there is not enough room for a whole primitive, flush.
+                    if (positionInBuffer >= vertices.Length)
+                    {
+                        Flush();
+                        // continue the strips
+                        switch (primitiveType)
+                        {
+                            case PrimitiveType.LineStrip:
+                                if (oldPosition > 0)
+                                {
+                                    vertices[positionInBuffer] = vertices[oldPosition - 1];
+                                    positionInBuffer++;
+                                }
+                                break;
+                            case PrimitiveType.TriangleStrip:
+                                if (oldPosition > 1)
+                                {
+                                    vertices[positionInBuffer] = vertices[oldPosition - 2];
+                                    positionInBuffer++;
+                                    vertices[positionInBuffer] = vertices[oldPosition - 1];
+                                    positionInBuffer++;
+                                }
+                                break;
+                        }
+                    }
+                    break;
+                default:
+                    throw new InvalidOperationException("primitive is not valid");
+            }
+            // once we know there's enough room, set the vertex in the buffer,
+            // and increase position.
+            vertices[positionInBuffer].Position = new Vector3(vertex, 0);
+            vertices[positionInBuffer].Color = color;
 
-			positionInBuffer++;
-		}
+            positionInBuffer++;
+        }
 
-		// End is called once all the primitives have been drawn using AddVertex.
-		// it will call Flush to actually submit the draw call to the graphics card, and
-		// then tell the basic effect to end.
-		public void End()
-		{
-			if (!hasBegun)
-			{
-				throw new InvalidOperationException
-					("Begin must be called before End can be called.");
-			}
+        // End is called once all the primitives have been drawn using AddVertex.
+        // it will call Flush to actually submit the draw call to the graphics card, and
+        // then tell the basic effect to end.
+        public void End()
+        {
+            if (!hasBegun)
+            {
+                throw new InvalidOperationException
+                    ("Begin must be called before End can be called.");
+            }
 
-			// Draw whatever the user wanted us to draw
-			Flush();
-			hasBegun = false;
-		}
+            // Draw whatever the user wanted us to draw
+            Flush();
+            hasBegun = false;
+        }
 
-		// Flush is called to issue the draw call to the graphics card. Once the draw
-		// call is made, positionInBuffer is reset, so that AddVertex can start over
-		// at the beginning. End will call this to draw the primitives that the user
-		// requested, and AddVertex will call this if there is not enough room in the
-		// buffer.
-		private void Flush()
-		{
-			if (!hasBegun)
-			{
-				throw new InvalidOperationException
-					("Begin must be called before Flush can be called.");
-			}
+        // Flush is called to issue the draw call to the graphics card. Once the draw
+        // call is made, positionInBuffer is reset, so that AddVertex can start over
+        // at the beginning. End will call this to draw the primitives that the user
+        // requested, and AddVertex will call this if there is not enough room in the
+        // buffer.
+        private void Flush()
+        {
+            if (!hasBegun)
+            {
+                throw new InvalidOperationException
+                    ("Begin must be called before Flush can be called.");
+            }
 
-			// no work to do
-			if (positionInBuffer == 0)
-			{
-				return;
-			}
+            // no work to do
+            if (positionInBuffer == 0)
+            {
+                return;
+            }
 
-			// how many primitives will we draw?
-			int primitiveCount = 0;
-			switch (primitiveType)
-			{
-				case PrimitiveType.LineList:
-				case PrimitiveType.TriangleList:
-					primitiveCount = positionInBuffer / numVertsPerPrimitive;
-					break;
-				case PrimitiveType.LineStrip:
-					primitiveCount = positionInBuffer - 1;
-					break;
-				case PrimitiveType.TriangleStrip:
-					primitiveCount = positionInBuffer - 2;
-					break;
-				default:
-					throw new InvalidOperationException("primitive is not valid");
-			}
+            // how many primitives will we draw?
+            int primitiveCount = 0;
+            switch (primitiveType)
+            {
+                case PrimitiveType.LineList:
+                case PrimitiveType.TriangleList:
+                    primitiveCount = positionInBuffer / numVertsPerPrimitive;
+                    break;
+                case PrimitiveType.LineStrip:
+                    primitiveCount = positionInBuffer - 1;
+                    break;
+                case PrimitiveType.TriangleStrip:
+                    primitiveCount = positionInBuffer - 2;
+                    break;
+                default:
+                    throw new InvalidOperationException("primitive is not valid");
+            }
 
-			// submit the draw call to the graphics card
-			device.DrawUserPrimitives<VertexPositionColor>(primitiveType, vertices, 0,
-				primitiveCount);
+            // submit the draw call to the graphics card
+            device.DrawUserPrimitives<VertexPositionColor>(primitiveType, vertices, 0,
+                primitiveCount);
 
-			// now that we've drawn, it's ok to reset positionInBuffer back to zero,
-			// and write over any vertices that may have been set previously.
-			positionInBuffer = 0;
-		}
+            // now that we've drawn, it's ok to reset positionInBuffer back to zero,
+            // and write over any vertices that may have been set previously.
+            positionInBuffer = 0;
+        }
 
-		#region Helper functions
+        #region Helper functions
 
-		// NumVertsPerPrimitive is a boring helper function that tells how many vertices
-		// it will take to draw each kind of primitive.
-		static private int NumVertsPerPrimitive(PrimitiveType primitive)
-		{
-			int numVertsPerPrimitive;
-			switch (primitive)
-			{
-				case PrimitiveType.LineList:
-					numVertsPerPrimitive = 2;
-					break;
-				case PrimitiveType.TriangleList:
-					numVertsPerPrimitive = 3;
-					break;
-				case PrimitiveType.LineStrip:
-				case PrimitiveType.TriangleStrip:
-					numVertsPerPrimitive = 1;
-					break;
-				default:
-					throw new InvalidOperationException("primitive is not valid");
-			}
-			return numVertsPerPrimitive;
-		}
+        // NumVertsPerPrimitive is a boring helper function that tells how many vertices
+        // it will take to draw each kind of primitive.
+        static private int NumVertsPerPrimitive(PrimitiveType primitive)
+        {
+            int numVertsPerPrimitive;
+            switch (primitive)
+            {
+                case PrimitiveType.LineList:
+                    numVertsPerPrimitive = 2;
+                    break;
+                case PrimitiveType.TriangleList:
+                    numVertsPerPrimitive = 3;
+                    break;
+                case PrimitiveType.LineStrip:
+                case PrimitiveType.TriangleStrip:
+                    numVertsPerPrimitive = 1;
+                    break;
+                default:
+                    throw new InvalidOperationException("primitive is not valid");
+            }
+            return numVertsPerPrimitive;
+        }
 
-		#endregion
+        #endregion
 
 
-	}
+    }
 }

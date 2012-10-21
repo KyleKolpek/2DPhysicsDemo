@@ -1,6 +1,6 @@
 using System;
 
-namespace ProjectNeoclaRPG
+namespace PhysDemo2D
 {
 #if WINDOWS || XBOX
     static class Program

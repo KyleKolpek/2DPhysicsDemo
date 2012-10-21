@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace ProjectNeoclaRPG
+namespace PhysDemo2D
 {
     interface ICollidable
     {

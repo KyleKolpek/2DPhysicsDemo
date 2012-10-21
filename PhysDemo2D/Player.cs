@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace ProjectNeoclaRPG
+namespace PhysDemo2D
 {
     class Player:Actor
     {

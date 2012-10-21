@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
 
-namespace ProjectNeoclaRPG
+namespace PhysDemo2D
 {
     public class Level : IDisposable
     {

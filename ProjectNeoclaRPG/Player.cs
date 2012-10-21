@@ -23,7 +23,11 @@ namespace ProjectNeoclaRPG
             base.Update(gameTime, keyboardState);
 
             // Apply drag
-            ApplyForce( 0.5f * velocity * velocity);
+            if (isOnGround)
+            {
+                ApplyForce(-0.01f * new Vector2(velocity.X * Math.Abs(velocity.X),
+                                               velocity.Y * Math.Abs(velocity.Y)));
+            }
 
             // Calculate user forces first so that the reaction can modify them
             // if desired.

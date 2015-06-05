@@ -137,16 +137,24 @@ namespace PhysDemo2D
             // Check overlaps
             // NOTE: these vectors may cause issues because of
             // floating point precision.
-            if (sMin <= dMax && sMax >= dMax)
+            //if (sMin <= dMax && sMax >= dMax)
+            //{
+            //    projectionVector = testAxis * (sMax - dMin);
+            //    return true;
+            //}
+            //else if (dMin <= sMax && dMax >= sMax)
+            //{
+            //    projectionVector = testAxis * (sMax - dMin);
+            //    return true;
+            //}
+            
+            // TODO: test this
+            if(sMin <= dMax && dMin <= aMax)
             {
                 projectionVector = testAxis * (sMax - dMin);
                 return true;
             }
-            else if (dMin <= sMax && dMax >= sMax)
-            {
-                projectionVector = testAxis * (sMax - dMin);
-                return true;
-            }
+            
             projectionVector = Vector2.Zero;
             return false;
         }
